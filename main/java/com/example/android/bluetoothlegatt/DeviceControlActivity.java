@@ -115,7 +115,7 @@ public class DeviceControlActivity extends Activity {
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                displayGattServices(mBluetoothLeService.getSupportedGattServices());
+                //displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             }
@@ -157,24 +157,25 @@ public class DeviceControlActivity extends Activity {
     };
 
     private void clearUI() {
-        mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
+       // mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
         mDataField.setText(R.string.no_data);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gatt_services_characteristics);
+        //setContentView(R.layout.gatt_services_characteristics);
+        setContentView(R.layout.button_control);
 
         final Intent intent = getIntent();
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
-        // Sets up UI references.
+        /*// Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
         mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
         mGattServicesList.setOnChildClickListener(servicesListClickListner);
-        mConnectionState = (TextView) findViewById(R.id.connection_state);
+        mConnectionState = (TextView) findViewById(R.id.connection_state);*/
         mDataField = (TextView) findViewById(R.id.data_value);
 
         getActionBar().setTitle(mDeviceName);
@@ -182,7 +183,7 @@ public class DeviceControlActivity extends Activity {
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        //HANDLES WEBVIEW
+       /* //HANDLES WEBVIEW
         String url = "http://mhealthcapstone.com";
         WebView view = (WebView) this.findViewById(R.id.gatt_web_view);
         WebSettings mywebSettings = view.getSettings();
@@ -192,7 +193,7 @@ public class DeviceControlActivity extends Activity {
         // view.setWebViewClient(new MyBrowser());
         view.setWebViewClient(new WebViewClient());
 
-        view.loadUrl(url);
+        view.loadUrl(url);*/
     }
 
 
@@ -253,7 +254,7 @@ public class DeviceControlActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mConnectionState.setText(resourceId);
+           //     mConnectionState.setText(resourceId);
             }
         });
     }
@@ -328,6 +329,19 @@ public class DeviceControlActivity extends Activity {
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
+    }
+
+    //TESTING CODE
+    public void onClickWrite(View v){
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.writeCustomCharacteristic(0xAA);
+        }
+    }
+
+    public void onClickRead(View v){
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.readCustomCharacteristic();
+        }
     }
 
 
